@@ -26,23 +26,41 @@ void callback(const nav_msgs::Odometry::ConstPtr &k)
     double xr = xf-x;
     double yr = yf-y;
     
-    double res = atan2(yr,xr) - yaw;
+    double ang = atan2(yr,xr) - yaw;
+    
+    double d = sqrt(pow(xr,2) + pow(yr,2));
     
     
     
     
     
-    if (res)
+    if (d > 0.2)
     {
-        v.linear.x = 1;
-        v.angular.z = 0;
+        
+        if (abs(ang) > 0.1)
+        {
+        
+        v.linear.x = 0;
+        v.angular.z = ang;
+            
+        }
+        
+        else
+        {
+            
+            v.linear.x = 1;
+            v.angular.z = 0;
+        }
     }
     else
     {
         v.linear.x = 0;
-        v.angular.z = 0.5;
+        v.angular.z = 0;
         
     }
+    
+    twist_pub.publish(v);
+    
     
 }
 
@@ -58,9 +76,8 @@ int main (int argc, char **argv)
    ros::Subscriber sub = nh.subscribe ("/vrep/vehicle/odometry", 1, callback);
     
     
-   twist_pub = nh.advertise geometry_msgs::Twist ("obstacle/twist", 1);
+   twist_pub = nh.advertise<geometry_msgs::Twist> ("gogo", 1);
     
-   ros::Rate loop_rate(50);
-   
+   ros::spin();
     
 }
