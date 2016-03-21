@@ -30,14 +30,10 @@ void callback(const nav_msgs::Odometry::ConstPtr &k)
     
     double d = sqrt(pow(xr,2) + pow(yr,2));
     
-    
-    
-    
-    
     if (d > 0.2)
     {
         
-        if (abs(ang) > 0.1)
+        if (std::abs(ang) > 0.1)
         {
         
         v.linear.x = 0;
